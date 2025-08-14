@@ -11,7 +11,7 @@ notify_approval:
   stage: notify_approval
   image: python:3.9-slim
   tags:
-    - docker-runner
+    - docker
   before_script:
     - pip install --no-cache-dir -r requirements.txt
   script:
@@ -25,7 +25,7 @@ notify_approval:
 #   stage: deploy
 #   image: python:3.9-slim
 #   tags:
-#     - docker-runner
+#     - docker
 #   before_script:
 #     - pip install --no-cache-dir -r requirements.txt
 #   script:
@@ -54,7 +54,7 @@ notify_approval:
 #   stage: notify
 #   image: python:3.9-slim
 #   tags:
-#     - docker-runner
+#     - docker
 #   before_script:
 #     - pip install --no-cache-dir -r requirements.txt
 #   script:
@@ -67,7 +67,7 @@ notify_approval:
 #   stage: notify
 #   image: python:3.9-slim
 #   tags:
-#     - docker-runner
+#     - docker
 #   before_script:
 #     - pip install --no-cache-dir -r requirements.txt
 #   script:
