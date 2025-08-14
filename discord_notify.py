@@ -111,8 +111,8 @@ def main():
     # 構建要發送到 Discord 的字段
     fields = [
         {"name": "發布者", "value": gitlab_user, "inline": True},
-        {"name": "GitLab Repo", "value": f"[連結]({project_url})", "inline": True},
-        {"name": "Pipeline", "value": f"[連結]({pipeline_url})", "inline": True},
+        {"name": "GitLab Repo", "value": f"[異動檢查]({project_url})", "inline": True},
+        {"name": "Pipeline", "value": f"[批准]({pipeline_url})", "inline": True},
     ]
 
     utc_now = datetime.utcnow()
