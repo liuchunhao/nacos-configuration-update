@@ -119,7 +119,7 @@ def main():
     utc_plus_8 = utc_now + timedelta(hours=8)
     success = notifier.send_message(
         content=f"""{message}\n\n時間: {utc_plus_8.strftime("%Y-%m-%d %H:%M:%S")}\n\n狀態: {status_text}""",
-        title="Nacos 配置更新通知",
+        title="Nacos配置異動通知(待批准)",
         color=color,
         fields=fields
     )
