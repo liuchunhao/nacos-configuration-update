@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          futures-server-cache:
+            url: http://futures-server.internal-1234567890.ap-southeast-1.elb.amazonaws.com
+            connect-timeout: 5000 #設定與目標服務連線的 timeout (毫秒)
+            read-timeout: 10000 #設定讀取資料的 timeout (毫秒)

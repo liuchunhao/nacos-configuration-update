@@ -1,0 +1,53 @@
+services:
+
+  config-setup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nacos-setup
+    env_file:
+      - .env
+    # depends_on:
+    #   nacos:
+    #     condition: service_healthy
+    volumes:
+      - ./import:/app/import  
+    restart: on-failure       
+    depends_on:
+      - nacos-backup
+    command: ["python", "nacos_setup.py"]
+
+  nacos-backup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nacos-backup
+    env_file:
+      - .env
+    volumes:
+      - ./export:/app/export
+    command: ["python", "nacos_backup.py"]
+
+  nacos-diff:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nacos-diff
+    env_file:
+      - .env
+    volumes:
+      - ./export:/app/export
+      - ./import:/app/import
+    command: ["python", "nacos_diff.py"]
+
+  notification:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notification
+    env_file:
+      - .env
+    volumes:
+      - ./export:/app/export
+      - ./import:/app/import
+    command: ["python", "discord_notify.py"]

@@ -1,0 +1,29 @@
+server:
+  undertow:
+    # IO 線程數設置為 CPU 核心數的 1~2 倍 (假設使用 8 核 CPU)
+    io-threads: 8
+    # 將 worker 線程數調整為合理值，避免過多線程帶來的上下文切換開銷
+    worker-threads: 128
+    # 緩衝區設定
+    buffer-size: 16384
+    direct-buffers: true
+    # 增加最大連接數以處理高併發
+    max-connections: 2000
+    # 合理化 HTTP 相關設定
+    max-http-post-size: 20971520  # 20MB
+    max-http-header-size: 16384
+    # 啟用 HTTP/2
+    enable-http2: true
+    # 增加請求超時設定，防止在高負載下過早超時
+    no-request-timeout: 90000  # 90 秒
+    # 效能優化設定
+    always-set-keep-alive: true
+    decode-url: true
+    url-charset: UTF-8
+    # 高級設定
+    eager-filter-init: true
+    high-water: 2097152  # 2MB，增加高水位標記
+    max-entity-size: 20971520  # 20MB
+    # 禁用不必要的日誌以提升性能
+    accesslog:
+      enabled: false

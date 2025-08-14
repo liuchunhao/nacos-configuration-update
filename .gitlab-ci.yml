@@ -1,0 +1,77 @@
+# GitLab CI/CD Configuration File
+# This file defines the continuous integration and deployment pipeline for the project
+
+# Define the stages of the pipeline in order of execution
+stages:
+  - notify_approval
+  - deploy
+  - notify
+
+notify_approval:
+  stage: notify_approval
+  image: python:3.9-slim
+  tags:
+    - docker-runner
+  before_script:
+    - pip install --no-cache-dir -r requirements.txt
+  script:
+    - python discord_notify.py "Nacos設定異動, 執行更新?（待批准)" "success"
+  when: on_success
+  only:
+    - main
+
+# Development environment deployment job
+# deploy_nacos_config:
+#   stage: deploy
+#   image: python:3.9-slim
+#   tags:
+#     - docker-runner
+#   before_script:
+#     - pip install --no-cache-dir -r requirements.txt
+#   script:
+#     - chmod +x *.sh
+#     - python nacos_backup.py
+#     - python nacos_setup.py
+#     - sleep 2
+#     - python nacos_diff.py
+#   only:
+#     - main
+#   artifacts:
+#     paths:
+#       - export/
+
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+#     - if: '$CI_COMMIT_TAG'
+#       when: manual
+#     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"'
+#       when: manual
+#     - if: '$CI_COMMIT_BRANCH == "ci"'
+#       when: manual
+
+
+# notify_success:
+#   stage: notify
+#   image: python:3.9-slim
+#   tags:
+#     - docker-runner
+#   before_script:
+#     - pip install --no-cache-dir -r requirements.txt
+#   script:
+#     - python discord_notify.py "Nacos 配置發布成功！" "success"
+#   when: on_success
+#   only:
+#     - main
+
+# notify_failure:
+#   stage: notify
+#   image: python:3.9-slim
+#   tags:
+#     - docker-runner
+#   before_script:
+#     - pip install --no-cache-dir -r requirements.txt
+#   script:
+#     - python discord_notify.py "Nacos 配置發布失敗！" "failure"
+#   when: on_failure
+#   only:
+#     - main

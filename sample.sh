@@ -1,0 +1,3 @@
+TOKEN=$(curl -s -X POST "http://ec2-15-220-83-112.ap-northeast-1.compute.amazonaws.com:8848/nacos/v1/auth/login" -d "username=nacos" -d "password=nacos" | grep -o '"accessToken":"[^"]*"' | cut -d'"' -f4)
+
+curl -s -H "Authorization: Bearer $TOKEN" "http://ec2-15-220-83-112.ap-northeast-1.compute.amazonaws.com:8848/nacos/v1/cs/configs?dataId=&tenant=dev&group=&pageNo=1&pageSize=100&search=accurate" | jq

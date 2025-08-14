@@ -1,0 +1,19 @@
+server:
+  port: 8084
+
+application:
+  version: 1.1.0
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.xh.mapper: info
+
+powerjob:
+  worker:
+    enabled: true
+    port: 30050  
+    app-name: settlement

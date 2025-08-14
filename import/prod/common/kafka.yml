@@ -1,0 +1,17 @@
+spring:
+  kafka:
+    bootstrap-servers: ${spring_kafka_bootstrap_ip:172.16.1.12:9092}
+    consumer:
+      group-id: ${spring.application.name}
+    producer:
+      transaction-id-prefix: txn_
+      retries: 3
+      acks: all
+    admin:
+      auto-create: true
+      properties:
+        auto.create.topics.enable: true
+
+message:
+  receiver:
+    enabled: ${message_receiver_enabled:false}

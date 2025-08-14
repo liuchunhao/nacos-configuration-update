@@ -1,0 +1,126 @@
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    io.github.resilience4j: INFO
+    org.springframework.web.client: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+    circuitbreakers:
+      enabled: true
+
+##### 針對每秒10,000次請求的設定 #####
+resilience4j:
+  # https://resilience4j.readme.io/docs/circuitbreaker#create-and-configure-a-circuitbreaker
+  # CircuitBreaker 熔斷防護，避免重複呼叫故障服務
+  # 只要在最近 10 次呼叫裡，失敗超過 50%，而且總呼叫數超過 5 次，
+  #	•就會把 CircuitBreaker切成 Open，並關閉 5秒，
+  #	•然後自動進入 Half-Open，允許 3 次試探，
+  #	•根據試探的結果決定繼續關閉或重新打開。
+  circuitbreaker:
+    instances:
+      CB1:
+        # 失敗率門檻（%）。
+        # CircuitBreaker 監控通過的請求，如果失敗比例 ≥ 50%，就會跳到 Open 狀態（中斷所有後續請求）。
+        # 範例：
+        # 如果在監控期間有 10 次呼叫，其中 5 次以上失敗，就觸發斷路。
+        failure-rate-threshold: 70                     # 失敗率門檻（%）
+
+        # CircuitBreaker 至少要收集到5次呼叫以後，才開始計算失敗率。
+        # 少於 5 次時，不做斷路判斷，保持在 Closed 狀態。
+        # 範例：
+        # 前 4 次就算全失敗，也不會觸發斷路，必須等至少 5 次之後才依 failure-rate-threshold 判斷。
+        minimum-number-of-calls: 5000 # 最少呼叫數門檻(約半秒)
+
+        # 設為 true 時，在 Open 狀態過一段時間後，自動轉成 Half-Open 進行試探呼叫（不需要外部手動介入）。
+        #
+        # Half-Open 是什麼？
+        #   → CircuitBreaker 允許少量流量進來試試看服務是不是恢復了。
+        automatic-transition-from-open-to-half-open-enabled: true # 是否自動進入 Half-Open
+
+        # 在 Open 狀態下，等待 5秒，之後自動進入 Half-Open 試探。
+        # 範例：
+        # 一旦斷路，CircuitBreaker會關 5 秒，5 秒後允許一些呼叫通過試探服務狀態。
+        wait-duration-in-open-state: 2s # Open 狀態等待時間
+
+        # 在 Half-Open 狀態下，允許最多3次試探呼叫。
+        # 這 3 次呼叫的結果決定是否恢復（回到 Closed）或重新斷路（回到 Open）。
+        # 範例：
+        # 如果這 3 次試探呼叫失敗率還是超過門檻，CircuitBreaker會重新跳回 Open。
+        permitted-number-of-calls-in-half-open-state: 1000 # Half-Open 時最多試探呼叫次數
+
+        # 記錄最近10次呼叫的結果，來計算失敗率。
+        # 這個就是 CircuitBreaker 評估的「樣本數」。
+        sliding-window-size: 10
+
+        # Resilience4j 有兩種滑動窗格型態：
+        # count_based → 固定最近 N 次呼叫
+        # time_based → 固定最近 T 秒內的呼叫
+        #
+        # count_based，代表「最近10次呼叫」作為觀察樣本，不看時間間隔快慢。
+        #
+        # 這個 Sliding Window（滑動窗口）是依照「呼叫次數」來計算（而不是依時間）。
+        sliding-window-type: time_based               # 滑動視窗型態（count_based or time_based）
+        recordExceptions:
+          - java.io.IOException
+          - java.lang.Exception
+          - java.lang.RuntimeException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+          - java.net.ConnectException
+          - java.util.concurrent.TimeoutException
+        ignoreExceptions:
+          - java.lang.IllegalArgumentException
+  # https://resilience4j.readme.io/docs/bulkhead#create-and-configure-a-bulkhead
+  # Bulkhead  隔艙保護，限制同時併發數，避免資源被單一任務耗盡
+  # 參數	                設定值	意思
+  # max-concurrent-calls	100	    最多允許100個並發呼叫，同時間內不能超過
+  # max-wait-duration	    0	    如果已滿，新的呼叫直接被拒絕，不等待
+  bulkhead:
+    instances:
+      BK1:
+        # 同時最多只允許 100 個呼叫進來。
+        #	• 超過 100 個時，第 101 個呼叫會被阻擋（或排隊，取決於 max-wait-duration）。
+        #
+        #範例：
+        #   如果目前已經有 100 個線程在處理請求，第 3 個請求過來時：
+        #	• 要嘛等待（如果允許等待）
+        #	• 要嘛直接被拒絕（如果不允許等待）
+        #   這樣可以保護後端服務不要被大量並發壓垮。
+        max-concurrent-calls: 2000                        # 同時最多允許2000個呼叫進來
+
+        # 	• 完全不等待。
+        #	• 如果超過 max-concurrent-calls（100個）就直接拒絕，不會在佇列中等待任何時間。
+        # 0 的效果：
+        #	• 不排隊。
+        #	• 誰搶到就誰進去，多的直接丟錯（BulkheadFullException）。
+        max-wait-duration: 10ms                           # 允許 10ms 排隊
+
+  # https://resilience4j.readme.io/docs/ratelimiter#create-and-configure-a-ratelimiter
+  # RateLimiter   限制速率，避免暴衝請求壓垮服務
+  # 參數	                設定值	意思
+  # timeout-duration	    0s	    沒配額時不等待，馬上拒絕
+  # limit-refresh-period	60s	    每60秒重置一次配額
+  # limit-for-period	    60	    每60秒只允許60次成功的呼叫
+  ratelimiter:
+    instances:
+      RA1:
+        # • 當目前沒有可用的令牌（token）時，不等待，直接拒絕。
+        # •	超過流量限制時，新的請求馬上拿不到 token → 直接丟錯（RequestNotPermitted）。
+        # 0 秒的效果：
+        #   •	誰先來誰先服務。
+        #   •	如果到的時候沒有配額，立刻被打回，不排隊也不等待。
+        timeout-duration: 0s                           # 沒配額時不等待，直接拒絕
+        # • 每隔 60秒（一分鐘）重置一次可用令牌(token)。
+        # • 每個「時間窗口」重新給新的一批可用配額。
+        limit-refresh-period: 1s                      # 每 1 秒刷新一次配額
+        # •	每一個 limit-refresh-period 內（也就是每 60 秒內），
+        # •	最多允許 60 次成功的請求 通過。
+        # 超過這個數量的請求，在本期內都會被拒絕（丟 RequestNotPermitted）。
+        limit-for-period: 10000                            # 每秒允許 10,000 次請求

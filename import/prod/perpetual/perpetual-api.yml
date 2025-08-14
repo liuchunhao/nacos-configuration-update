@@ -1,0 +1,40 @@
+spring:
+  kafka:
+    consumer:
+      enable-auto-commit: false
+    listener:
+      ack-mode: MANUAL
+      missing-topics-fatal: false
+  cache:
+    type: redis
+    redis:
+      cache-null-values: true
+      key-prefix: "${spring.application.name}-"
+      time-to-live: 60000
+
+server:
+  undertow:
+    # IO 線程數，負責處理非阻塞 I/O 操作，建議設置為 CPU 核心數的 1~2 倍
+    io-threads: 8
+    # Worker 線程數，負責處理業務邏輯，建議設置為 CPU 核心數 * 8 或更高
+    worker-threads: 400
+    # 每個線程的連線佇列大小，防止連線過多時拒絕請求
+    max-http-post-size: 10485760  # 10MB，根據需求調整
+    # 最大並發請求數，根據 TPS 和響應時間估算
+    max-connections: 1000
+    # 緩衝區設定，減少內存壓力
+    buffer-size: 1024  # 16KB
+    direct-buffers: true  # 使用直接內存，減少 GC 壓力
+    # 啟用 HTTP/2，提升高併發性能
+    enable-http2: true
+    # 請求超時設定，防止長時間佔用資源
+    no-request-timeout: 60000  # 60 秒
+    # 禁用不必要的日誌以提升性能
+    accesslog:
+      enabled: false
+  max-http-header-size: 16KB    
+
+powerjob:
+  worker:
+    enabled: true    
+    port: 27780

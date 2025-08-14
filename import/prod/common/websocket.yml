@@ -1,0 +1,27 @@
+#============================================================================
+# netty socket io setting
+#============================================================================
+# host在本地測試可以設置為localhost或者本機IP，在Linux服務器跑可換成服務器IP
+socketio:
+  host: ${WEB_SOCKET_HOST}
+  port: ${WEB_SOCKET_PORT:9092}
+  # 設置最大每幀處理數據的長度，防止他人利用大數據來攻擊服務器
+  maxFramePayloadLength: 1048576
+  # 設置http交互最大內容長度
+  maxHttpContentLength: 1048576
+  # socket連接數大小（如只監聽一個埠的話，boss thread 為1即可）
+  bossCount: 2
+  # 連接數量
+  workCount: 32
+  # 允許客戶請求
+  allowCustomRequests: true
+  # 協議升級超時時間（毫秒），默認10秒。HTTP握手升級為ws協議超時時間
+  upgradeTimeout: 10000
+  # Ping消息超時時間（毫秒），默認60秒，這個時間間隔內沒有接收到心跳消息就會發送超時事件
+  pingTimeout: 60000
+  # Ping消息間隔（毫秒），默認25秒。客戶端向服務器發送一條心跳消息間隔
+  pingInterval: 25000
+  # Message Compression. Compress large payloads or use text-based compression like GZIP when transmitting data that can be heavy (like large JSON objects).
+  httpCompression: true
+  # Message Compression. Compress large payloads or use text-based compression like GZIP when transmitting data that can be heavy (like large JSON objects).
+  websocketCompression: true

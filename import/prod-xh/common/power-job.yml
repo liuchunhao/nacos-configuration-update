@@ -1,0 +1,11 @@
+powerjob:
+  healthcheck:
+    interval: 30000 
+  worker:    
+    allow-lazy-connect-server: true        
+    server-address: power-job:7700
+    protocol: http
+    app-name: ${spring.application.name}
+    store-strategy: disk
+    max-result-length: 4096
+    max-appended-wf-context-length: 4096

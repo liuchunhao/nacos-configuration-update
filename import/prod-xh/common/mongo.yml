@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://adminUser:Gh7%24pK9%40Lm2*Zx5%23Qw3%21Vb6@54.255.15.71:27017/admin?authSource=admin

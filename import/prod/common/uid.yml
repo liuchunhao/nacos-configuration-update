@@ -1,0 +1,10 @@
+uid:
+  baidu:
+    enabled: true
+    boost-power: 5
+    uid-generator-impl: com.xh.module.uuid.baidu.impl.CachedUidGenerator
+    worker-id-assigner-impl: com.xh.module.uuid.baidu.worker.DisposableWorkerIdAssigner
+    jdbc-driver: com.mysql.cj.jdbc.Driver
+    jdbc-account: 'root'
+    jdbc-passwd: 'qazQAZqaz123!@#'
+    jdbc-url: 'jdbc:mysql://172.16.1.10:3306/firebit?allowPublicKeyRetrieval=true&useOldAliasMetadataBehavior=true&useSSL=false&characterEncoding=UTF-8&useUnicode=true&character_set_server=utf8mb4&useCursorFetch=true'

@@ -1,0 +1,21 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: ${swagger.enable:false}
+  api-docs:
+    path: /v3/api-docs
+    enabled: ${swagger.enable:false}
+
+springwolf:
+  enabled: false
+  use-fqn: false
+  docket:
+    base-package: com.xh
+    info:
+      title: ${spring.application.name}
+      version: 1.0.0
+      description: ${spring.application.name} using Springwolf
+    servers:
+      kafka-server:
+        protocol: kafka
+        host: ${spring.kafka.bootstrap-servers}

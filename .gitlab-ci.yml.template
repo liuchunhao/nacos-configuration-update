@@ -1,0 +1,72 @@
+# GitLab CI/CD Configuration File
+# This file defines the continuous integration and deployment pipeline for the project
+
+# Define the stages of the pipeline in order of execution
+stages:
+  - test
+  - deploy
+
+# Global variables for Docker-in-Docker setup
+variables:
+  DOCKER_HOST: tcp://docker:2375     # DinD 服務預設的非 TLS 端口
+  # DOCKER_TLS_VERIFY: 0               # 禁用 Docker 客戶端的 TLS 校驗
+  # DOCKER_TLS_CERTDIR: "/certs"
+  # DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"     # 禁用 TLS 校驗後它們不再需要
+
+# Test stage jobs
+
+# Code quality check job
+code_quality:
+  stage: test
+  image: python:3.9-slim  # Use Python image for this job
+  tags:
+    - docker-runner
+  script:
+    - pip install --cache-dir .cache/pip -r requirements.txt
+    - pip install pylint black  # Install necessary tools (handle requirements.txt or install directly)
+    # - pylint nacos_setup.py nacos_backup.py  # Run pylint for code analysis
+    # - black --check nacos_setup.py nacos_backup.py  # Check code formatting
+  allow_failure: true  # Don't fail pipeline if code quality checks fail
+
+# Security scanning job
+security_scan:
+  stage: test
+  image: python:3.9-slim  # Use Python image for this job
+  tags:
+    - docker-runner
+  script:
+    - pip install --cache-dir .cache/pip -r requirements.txt  # Install necessary tools (handle requirements.txt or install directly)
+    - pip install bandit 
+    - bandit -r .  # Run security scan on all Python files
+  allow_failure: true  # Don't fail pipeline if security scan fails
+
+# Deployment stage jobs
+
+# Development environment deployment job
+deploy_nacos_config:
+  stage: deploy
+  image: docker:20.10.16  # Use Docker image for deployment
+  tags:
+    - docker-runner
+  services:
+    - name: docker:19.03-dind  # Enable Docker-in-Docker service
+      alias: docker # <-- Crucial for DOCKER_HOST=tcp://docker:2375
+
+  variables:
+    DOCKER_HOST: tcp://docker:2375 # 確保 DOCKER_HOST 在這裡定義或全局定義
+  before_script:
+    # Install docker-compose in the container
+    - apk add --no-cache docker-compose # Use apk for alpine, apt-get for debian/ubuntu based docker image
+    - timeout 120s sh -c 'until docker info; do sleep 1; done'
+    - export DOCKER_HOST=tcp://docker:2375
+    - docker info
+    - docker-compose --version
+  script:
+    - chmod +x start.sh  # Make start.sh executable
+    - ./start.sh  # Run the start script
+  environment:
+    name: development
+  only:
+    - main
+    - dev
+    - stage

@@ -1,0 +1,20 @@
+spring:
+  data:
+    redis:
+      timeout: 10s # 超時時間
+      password: qazQAZqaz123!@#
+      cluster:
+        refresh:
+          adaptive: true
+          period: 30s
+        nodes:  
+          - 172.16.1.7:6379  # cluster1 主節點
+        max-redirects: 5       # 重定向的最大次數
+      lettuce:
+        shutdown-timeout: 1s
+        pool:
+          max-active: 50      # 最大連接數
+          max-idle: 30         # 最大空閒連接數
+          min-idle: 20         # 最小空閒連接數
+          max-wait: 5s         # 連接池阻塞最大等待時間
+          time-between-eviction-runs: 5s  # 空閒物件逐出執行緒的執行頻率

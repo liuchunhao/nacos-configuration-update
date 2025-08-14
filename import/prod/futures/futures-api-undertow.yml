@@ -1,0 +1,25 @@
+
+server:
+ undertow:
+  # IO 線程數，負責處理非阻塞 I/O 操作，建議設置為 CPU 核心數的 1~2 倍
+  io-threads: 8
+  # 負責處理業務邏輯，建議設定為 CPU核心數 * 100 或 根據 TPS 預估值調整
+  worker-threads: 800  # 根據實際負載調整
+  # 每個線程的連線佇列大小，防止連線過多時拒絕請求
+  max-http-post-size: 10485760 # 10MB，根據需求調整
+  # 最大並發請求數，根據 TPS 和響應時間估算
+  max-connections: 10000  # 支援萬級同時連線
+  # 緩衝區設定，減少記憶體壓力
+  buffer-size: 16384  # 增加到 16KB
+  # 使用直接記憶體，減少 GC 壓力
+  direct-buffers: true
+  # 啟用 HTTP/2，提升高併發性能
+  enable-http2: true
+  # 請求超時設定，防止長時間佔用資源  
+  no-request-timeout: 60000 # 60 秒
+  # 禁用不必要的日誌以提升性能
+  accesslog:
+    enabled: false
+  max-http-header-size: 16KB
+  max-parameters: 2000  # 增加參數處理能力
+  server-name: ""  # 隱藏服務器識別

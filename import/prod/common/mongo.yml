@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      host: 172.16.2.4
+      port: 27017
+      username: mongouser
+      password: qazQAZqaz123!@#
+      authentication-database: admin  # 必須是 admin
+      database: firebit  # 實際操作的資料庫

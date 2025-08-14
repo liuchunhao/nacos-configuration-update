@@ -1,0 +1,6 @@
+server:
+  port: 8085
+
+application:
+  version: 1.1.0
+    

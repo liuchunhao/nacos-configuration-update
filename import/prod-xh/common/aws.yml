@@ -1,0 +1,10 @@
+aws:
+  accessKey: e37b7bd69e1a0722474291b9ef21f0e2
+  secretKey: 0a46c1a2b2d717c879227af63184b2b470d1e4a6485b32c7a91e6fa22ec26bea
+  bucket: xihui
+  endpoint: https://ce4f8cdb479ea6e4c29bab9ec2b0e079.r2.cloudflarestorage.com/
+
+image:
+  prefix:
+    # url: https://d2xmqjngyxyf6g.cloudfront.net
+    url: https://pub-8f6a01bda2594e07aa5820ae62cbb10a.r2.dev

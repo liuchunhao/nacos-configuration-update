@@ -1,0 +1,32 @@
+spring:
+ datasource:
+  master:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://172.16.1.10:3306/firebit?allowPublicKeyRetrieval=true&useOldAliasMetadataBehavior=true&useSSL=false&characterEncoding=UTF-8&useUnicode=true&character_set_server=utf8mb4&rewriteBatchedStatements=true
+    username: root
+    password: qazQAZqaz123!@#
+    type: com.zaxxer.hikari.HikariDataSource
+    minimum-idle: 20                 # 從 250 降到 20
+    maximum-pool-size: 50           # 從 500 降到 100
+    idle-timeout: 120000             # 從 300000(5分鐘) 降到 120000(2分鐘)
+    max-lifetime: 600000             # 從 1740000(29分鐘) 降到 600000(10分鐘)
+    leak-detection-threshold: 60000  # 保持不變
+    connection-timeout: 60000        # 從 30000(30秒) 增加到 60000(60秒)
+    validation-timeout: 10000        # 新增參數
+    keepalive-time: 30000            # 新增參數
+    register-mbeans: true            # 新增參數，便於監控    
+  read:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://172.16.1.13:3306/firebit?allowPublicKeyRetrieval=true&useOldAliasMetadataBehavior=true&useSSL=false&characterEncoding=UTF-8&useUnicode=true&character_set_server=utf8mb4&rewriteBatchedStatements=true
+    username: root
+    password: qazQAZqaz123!@#
+    type: com.zaxxer.hikari.HikariDataSource
+    minimum-idle: 20                 # 從 250 降到 20
+    maximum-pool-size: 50           # 從 500 降到 100
+    idle-timeout: 120000             # 從 300000(5分鐘) 降到 120000(2分鐘)
+    max-lifetime: 600000             # 從 1740000(29分鐘) 降到 600000(10分鐘)
+    leak-detection-threshold: 60000  # 保持不變
+    connection-timeout: 60000        # 從 30000(30秒) 增加到 60000(60秒)
+    validation-timeout: 10000        # 新增參數
+    keepalive-time: 30000            # 新增參數
+    register-mbeans: true            # 新增參數，便於監控  

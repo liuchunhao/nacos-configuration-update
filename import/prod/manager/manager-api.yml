@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+application:
+  version: 1.1.0
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.xh.mapper: debug
+
+apiKey: 39554012193771521
+secret: VB2L3QU5YN8EP5X37V0PE6VUQB1Z0A82
+mchId: 39334074522804224   
+    
