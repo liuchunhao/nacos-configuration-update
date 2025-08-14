@@ -35,11 +35,12 @@ deploy_nacos_config:
     - python nacos_setup.py
     - sleep 2
     - python nacos_diff.py
-  only:
-    - main
   artifacts:
     paths:
       - export/
+
+  # only:
+  #   - main
 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
@@ -47,9 +48,6 @@ deploy_nacos_config:
       when: manual
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"'
       when: manual
-    - if: '$CI_COMMIT_BRANCH == "ci"'
-      when: manual
-
 
 notify_success:
   stage: notify
