@@ -21,7 +21,7 @@ stages:
 #     - main
 
 notify_success:
-  stage: notify
+  stage: notify_approval
   image: python:3.9-slim
   tags:
     - docker
