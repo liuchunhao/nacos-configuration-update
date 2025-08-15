@@ -1,15 +1,20 @@
 # nacos-configuration
 
-## Getting started
-
-Edit `.env` file to change the configuration of Nacos server.
+## Variables
+Assign `CI Environment Variables` or you can edit `.env` file to change the configuration of Nacos server or
 
 ```ini
-NACOS_SERVER_ADDR=ec2-15-220-83-112.ap-northeast-1.compute.amazonaws.com:8848
-NACOS_USERNAME=nacos
-NACOS_PASSWORD=nacos
+# Nacos Configuration
+NACOS_SERVER_ADDR=<nacos-server-ip>:8848
+NACOS_USERNAME=<username>
+NACOS_PASSWORD=<password>
 NACOS_AUTH_ENABLED=true
+
+# Delete configuration files that are not in the export folder if NACOS_DELETE_EXPORT_ONLY is true
 NACOS_DELETE_EXPORT_ONLY=false
+
+# Discord Configuration
+DISCORD_WEBHOOK_URL=<webhook-url>
 ```
 
 Put your updated configuration files into the `import` directory.
