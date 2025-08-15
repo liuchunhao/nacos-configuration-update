@@ -4,8 +4,10 @@ import shutil
 import logging
 import requests
 import json
-
 from dotenv import load_dotenv
+
+# Load environment variables from .env file.
+# Existing environment variables will not be overwritten.
 load_dotenv()
 
 # Setup basic logging

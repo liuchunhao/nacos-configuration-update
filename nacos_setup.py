@@ -8,7 +8,11 @@ from typing import Optional, Dict, Any
 import logging
 from datetime import datetime, timedelta
 
+
 from dotenv import load_dotenv
+
+# Load environment variables from .env file
+# Existing environment variables will not be overwritten.
 load_dotenv()
 
 # Import the Discord Notifier class
