@@ -20,7 +20,7 @@ stages:
 #   only:
 #     - main
 
-notify_success:
+notify_approval:
   stage: notify_approval
   image: python:3.9-slim
   tags:
