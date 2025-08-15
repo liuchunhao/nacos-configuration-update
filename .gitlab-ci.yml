@@ -7,15 +7,31 @@ stages:
   - deploy
   - notify
 
-notify_approval:
-  stage: notify_approval
+# notify_approval:
+#   stage: notify_approval
+#   image: python:3.9-slim
+#   tags:
+#     - docker
+#   before_script:
+#     - pip install --no-cache-dir -r requirements.txt
+#   script:
+#     - python discord_notify.py "Nacos設定異動, 執行更新?（待批准)" "success"
+#   when: on_success
+#   only:
+#     - main
+
+notify_success:
+  stage: notify
   image: python:3.9-slim
   tags:
     - docker
+  variables:          
+    DISCORD_MESSAGE_CONTENT: "✅ ** Nacos設定異動,待批准! **"
+    DISCORD_EMBED_COLOR: 3066993 # 綠色
   before_script:
     - pip install --no-cache-dir -r requirements.txt
   script:
-    - python discord_notify.py "Nacos設定異動, 執行更新?（待批准)" "success"
+    - python discord_notify.py
   when: on_success
   only:
     - main
@@ -51,10 +67,13 @@ notify_success:
   image: python:3.9-slim
   tags:
     - docker
+  variables:          # 透過變數將「參數」傳遞給 Python 腳本
+    DISCORD_MESSAGE_CONTENT: "✅ ** Nacos配置更新成功! **"
+    DISCORD_EMBED_COLOR: 3066993 # 綠色
   before_script:
     - pip install --no-cache-dir -r requirements.txt
   script:
-    - python discord_notify.py "Nacos 配置發布成功！" "success"
+    - python discord_notify.py
   when: on_success
   only:
     - main
@@ -64,10 +83,13 @@ notify_failure:
   image: python:3.9-slim
   tags:
     - docker
+  variables:
+    DISCORD_MESSAGE_CONTENT: "❌ ** Nacos配置更新失敗! **"
+    DISCORD_EMBED_COLOR: 15158332 # 紅色
   before_script:
     - pip install --no-cache-dir -r requirements.txt
   script:
-    - python discord_notify.py "Nacos 配置發布失敗！" "failure"
+    - python discord_notify.py
   when: on_failure
   only:
     - main
