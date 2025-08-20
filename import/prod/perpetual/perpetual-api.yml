@@ -1,10 +1,19 @@
 spring:
   kafka:
+    bootstrap-servers: ${spring_kafka_bootstrap_ip:172.16.1.12:9092}
     consumer:
+      group-id: ${spring.application.name}
       enable-auto-commit: false
+    producer:
+      retries: 3
+      acks: all
     listener:
       ack-mode: MANUAL
       missing-topics-fatal: false
+    admin:
+      auto-create: true
+      properties:
+        auto.create.topics.enable: true
   cache:
     type: redis
     redis:
