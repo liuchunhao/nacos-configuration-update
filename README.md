@@ -8,6 +8,8 @@ Assign `CI Environment Variables` or you can edit `.env` file to change the conf
 NACOS_SERVER_ADDR=<nacos-server-ip>:8848
 NACOS_USERNAME=<username>
 NACOS_PASSWORD=<password>
+
+# true if Nacos required password authentication
 NACOS_AUTH_ENABLED=true
 
 # Delete configuration files that are not in the export folder if NACOS_DELETE_EXPORT_ONLY is true
