@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python3
+import sys
 import os
 import json
 import requests
@@ -18,6 +19,7 @@ load_dotenv()
 # 設置日誌
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 class NacosConfigLoader:
     def __init__(self):
@@ -117,7 +119,7 @@ class NacosConfigLoader:
                 
         except Exception as e:
             logger.error(f"Error creating namespace: {str(e)}")
-            return False
+            sys.exit(1)
 
     def ensure_namespace_exists(self, namespace_name: str) -> bool:
         """
@@ -156,7 +158,7 @@ class NacosConfigLoader:
             
         except Exception as e:
             logger.error(f"Error checking/creating namespace: {str(e)}")
-            return False
+            sys.exit(1)
 
     def publish_config(self, 
                       namespace_id: Optional[str], 
@@ -222,11 +224,12 @@ class NacosConfigLoader:
                 return True
             else:
                 logger.error(f"Failed to publish: Namespace='{namespace_id}', Group='{group}', DataID='{data_id}'. Response: {response.text}")
-                return False
-                
+                exit(1)
+
         except Exception as e:
             logger.error(f"Error publishing config: {str(e)}")
-            return False
+            sys.exit(1)
+
 
 def main():
     # 創建配置加載器實例
@@ -309,6 +312,7 @@ def main():
     #         logger.error("Failed to send Discord success notification.")
     # else:
     #     logger.warning("DISCORD_WEBHOOK_URL not set. Skipping Discord notification.")
+
 
 if __name__ == "__main__":
     main()

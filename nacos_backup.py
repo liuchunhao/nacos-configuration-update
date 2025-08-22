@@ -1,4 +1,6 @@
 import os
+import sys
+
 import requests
 import json
 import logging
@@ -26,6 +28,7 @@ NAMESPACE_API = f"{BASE_URL}/nacos/v1/console/namespaces"
 CONFIGS_API = f"{BASE_URL}/nacos/v1/cs/configs"
 LOGIN_API = f"{BASE_URL}/nacos/v1/auth/login"
 
+
 def get_token():
     resp = requests.post(LOGIN_API, data={
         "username": NACOS_USERNAME,
@@ -37,10 +40,12 @@ def get_token():
     except Exception:
         return resp.text.strip()
 
+
 def get_namespaces(headers):
     resp = requests.get(NAMESPACE_API, headers=headers)
     resp.raise_for_status()
     return resp.json().get("data", [])
+
 
 def get_config_list(namespace, headers, page_no=1, page_size=100):
     params = {
@@ -58,6 +63,7 @@ def get_config_list(namespace, headers, page_no=1, page_size=100):
     resp.raise_for_status()
     return resp.json()
 
+
 def get_config_content(data_id, group, namespace, headers):
     params = {
         "dataId": data_id,
@@ -68,6 +74,7 @@ def get_config_content(data_id, group, namespace, headers):
     resp = requests.get(CONFIGS_API, params=params, headers=headers)
     resp.raise_for_status()
     return resp.text
+
 
 def safe_remove_directory(directory, max_retries=3, retry_delay=1):
     """Safely remove a directory with retries."""
@@ -83,6 +90,7 @@ def safe_remove_directory(directory, max_retries=3, retry_delay=1):
             else:
                 logging.error(f"Failed to remove {directory} after {max_retries} attempts: {e}")
                 return False
+
 
 def main():
     headers = {}
@@ -113,7 +121,7 @@ def main():
                 configs_page = get_config_list(ns_id, headers, page_no=page_no)
             except requests.HTTPError as e:
                 logger.error(f"Error backing up namespace {ns_name} ({ns_id}): {e}")
-                break
+                sys.exit(1)
 
             configs = configs_page.get("pageItems", [])
             if not configs:
@@ -138,6 +146,7 @@ def main():
                 break
 
     print(f"Backup finished! All configs saved in {BACKUP_DIR}/")
+
 
 if __name__ == "__main__":
     main()
