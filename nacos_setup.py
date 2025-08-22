@@ -8,12 +8,9 @@ from typing import Optional, Dict, Any
 import logging
 from datetime import datetime, timedelta
 
+from dotenv import load_dotenv
 
-
-# 只有在 NACOS 相關環境變數都不存在時才載入 .env
-if not (os.getenv('NACOS_SERVER_ADDR') or os.getenv('NACOS_USERNAME') or os.getenv('NACOS_PASSWORD') or os.getenv('NACOS_AUTH_ENABLED')):
-    from dotenv import load_dotenv
-    load_dotenv()
+load_dotenv()
 
 # Import the Discord Notifier class
 # from discord_notify import DiscordNotifier
